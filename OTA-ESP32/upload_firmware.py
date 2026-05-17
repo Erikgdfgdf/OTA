@@ -6,7 +6,7 @@ from datetime import datetime
 
 VERSION_FILE = "include/version.h"
 JSON_PATH    = "server/firmware.json"
-BIN_SRC      = ".pio/build/fm-devkit/firmware.bin"
+BIN_SRC      = ".pio/build/lilygo-t-display/firmware.bin"
 BIN_DEST     = "server/firmware.bin"
 PIO_PATH = "/home/irishvl/.platformio/penv/bin/pio" 
 

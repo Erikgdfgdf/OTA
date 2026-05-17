@@ -43,6 +43,7 @@ static esp_err_t fetch_latest_version(char* out_version, char* out_url, size_t b
 
     esp_http_client_config_t config = {};
     config.url = FIRMWARE_JSON_URL;
+    config.cert_pem = github_ca_pem_start;
 
     esp_http_client_handle_t client = esp_http_client_init(&config);
 
@@ -102,6 +103,7 @@ bool ota_check_and_update() {
 
     esp_http_client_config_t http_config = {};
     http_config.url = firmware_url;
+    http_config.cert_pem = github_ca_pem_start;
 
     esp_https_ota_config_t ota_client_config = {};
     ota_client_config.http_config = &http_config;
