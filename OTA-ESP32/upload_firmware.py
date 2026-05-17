@@ -8,6 +8,7 @@ VERSION_FILE = "include/version.h"
 JSON_PATH    = "server/firmware.json"
 BIN_SRC      = ".pio/build/fm-devkit/firmware.bin"
 BIN_DEST     = "server/firmware.bin"
+PIO_PATH = "/home/irishvl/.platformio/penv/bin/pio" 
 
 # Read and auto-increment the build number 
 # version.h stores: #define FIRMWARE_BUILD 5
@@ -34,7 +35,7 @@ print(f"Updated version.h → {version}")
 
 # Build the firmware 
 print("Building firmware...")
-subprocess.run(["pio", "run"], check=True)
+subprocess.run([PIO_PATH, "run"], check=True)
 
 # Update firmware.json 
 os.makedirs("server", exist_ok=True)
