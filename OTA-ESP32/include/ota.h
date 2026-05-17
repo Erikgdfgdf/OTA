@@ -1,6 +1,8 @@
 #ifndef OTA_H
 #define OTA_H
 
-void ota_update();
+void mark_firmware_valid();
+bool ota_check_and_update();
+
 
 #endif // OTA_H
