@@ -12,8 +12,8 @@ static const char* TAG = "OTA";
 #define CURRENT_VERSION "1.0.0"
 #define JSON_BUFFER_SIZE 512
 
-extermal const char github_ca_pem_start[] asm("_binary_github_ca_pem_start");
-extermal const char github_ca_pem_end[] asm("_binary_github_ca_pem");
+extern const char github_ca_pem_start[] asm("_binary_github_ca_pem_start");
+extern const char github_ca_pem_end[] asm("_binary_github_ca_pem");
 
 
 static bool extract_json_string(const char* json, const char* key, char* out, size_t out_size) {
