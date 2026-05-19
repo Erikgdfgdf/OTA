@@ -5,7 +5,7 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 
-#define LED_PIN GPIO_NUM_5
+#define LED_PIN GPIO_NUM_4
 
 
 void led_init() {

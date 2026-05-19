@@ -4,13 +4,14 @@
 #include "esp_system.h"
 #include "esp_https_ota.h"
 #include "github_ca_pem.h"
+#include "version.h"
 
 static const char* TAG = "OTA";
 
 #define OTA_URL "https://raw.githubusercontent.com/Erikgdfgdf/OTA/refs/heads/main/OTA-ESP32/server/firmware.bin"
 #define FIRMWARE_JSON_URL "https://raw.githubusercontent.com/Erikgdfgdf/OTA/refs/heads/main/OTA-ESP32/server/firmware.json"
 
-#define CURRENT_VERSION "1.0.0"
+#define CURRENT_VERSION FIRMWARE_VERSION
 #define JSON_BUFFER_SIZE 512
 
 static bool extract_json_string(const char* json, const char* key, char* out, size_t out_size) {
