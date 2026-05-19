@@ -5,11 +5,11 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 
-#define LED_PIN GPIO_NUM_4
+#define LED_PIN GPIO_NUM_5
 
 
 void led_init() {
-    
+
     gpio_config_t io_conf = {};
     io_conf.pin_bit_mask = (1ULL << LED_PIN);
     io_conf.mode = GPIO_MODE_OUTPUT;
