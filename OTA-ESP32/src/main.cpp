@@ -29,34 +29,23 @@ extern "C" void app_main(void)
     if (wifi_is_connected())
     {
         mark_firmware_valid();
+        bool updated = ota_check_and_update();
+            if (updated) {
+                esp_restart();
+            } 
     } else {
         ESP_LOGE("MAIN", "WiFi not connected- bootloader will rollback"); 
     }
     
-
-    bool updated = ota_check_and_update();
-    if (updated) {
-        esp_restart();
-    }
-
-    int counter = 0;    
+    //added task to check for updates every 10 seconds
+    xTaskCreate(ota_task, "ota_task", 8192, NULL, 5, NULL);
+   
       while (true) {
           
         gpio_set_level(LED_PIN,1);
         vTaskDelay(pdMS_TO_TICKS(500));
         gpio_set_level(LED_PIN,0);
         vTaskDelay(pdMS_TO_TICKS(500));
-
-        counter++;
-
-        if (counter >= 30) {
-            counter = 0;
-            bool updated = ota_check_and_update();
-            if (updated) {
-                esp_restart();
-            }
-        }
-          
       }
    
 }

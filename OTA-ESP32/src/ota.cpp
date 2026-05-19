@@ -126,3 +126,13 @@ bool ota_check_and_update() {
         return false;
     }
 }
+
+void ota_task(void* pvParameters) {
+    while (true) {
+        vTaskDelay(pdMS_TO_TICKS(10000));  // check every 10 seconds
+        bool updated = ota_check_and_update();
+        if (updated){
+             esp_restart();
+        }
+    }
+}
