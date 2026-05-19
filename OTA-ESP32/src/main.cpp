@@ -7,7 +7,7 @@
 #include "esp_log.h"
 
 
-#define LED_PIN GPIO_NUM_5
+#define LED_PIN GPIO_NUM_4
 
 
 void led_init() {
@@ -26,21 +26,13 @@ extern "C" void app_main(void)
 
     wifi_init();
 
-    bool connected = false;
-    for (int i = 0; i < 5; i++)
+    if (wifi_is_connected())
     {
-         if (wifi_is_connected()){
-        connected = true;
-        break;}
-    }
-    ESP_LOGI("MAIN", "Waiting for WiFi connection...");
-    vTaskDelay(pdMS_TO_TICKS(5000)); // Wait for 5 seconds before checking connection status
-   
-    if (connected){
         mark_firmware_valid();
     } else {
-        ESP_LOGE("MAIN", "Failed to connect to WiFi. Restarting...");
+        ESP_LOGE("MAIN", "WiFi not connected- bootloader will rollback"); 
     }
+    
 
     bool updated = ota_check_and_update();
     if (updated) {

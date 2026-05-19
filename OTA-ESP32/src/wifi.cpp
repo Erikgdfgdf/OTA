@@ -81,7 +81,22 @@ void wifi_init() {
 }
 
 bool wifi_is_connected() {
-    wifi_ap_record_t ap_info;
-    esp_err_t err = esp_wifi_sta_get_ap_info(&ap_info);
-    return err == ESP_OK; // If we can get AP info, we're connected
+    for (int i = 0; i < 30; i++)
+    {
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Wait for 1 second
+       esp_netif_t* netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
+        if (netif == nullptr) continue;
+
+        esp_netif_ip_info_t ip_info;
+        esp_netif_get_ip_info(netif, &ip_info);
+
+        if (ip_info.ip.addr != 0) {
+            ESP_LOGI("WIFI", "Connected! IP: " IPSTR, IP2STR(&ip_info.ip));
+            return true;
+        }
+    }
+
+    ESP_LOGE("WIFI", "Failed to get IP after 30 seconds");
+    return false;
 }
+    
