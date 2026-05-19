@@ -4,8 +4,10 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
+#include "esp_log.h"
 
-#define LED_PIN GPIO_NUM_4
+
+#define LED_PIN GPIO_NUM_5
 
 
 void led_init() {
@@ -24,9 +26,21 @@ extern "C" void app_main(void)
 
     wifi_init();
 
-    vTaskDelay(pdMS_TO_TICKS(5000)); // Wait for WiFi to connect
-
-    mark_firmware_valid();
+    bool connected = false;
+    for (int i = 0; i < 5; i++)
+    {
+         if (wifi_is_connected()){
+        connected = true;
+        break;}
+    }
+    ESP_LOGI("MAIN", "Waiting for WiFi connection...");
+    vTaskDelay(pdMS_TO_TICKS(5000)); // Wait for 5 seconds before checking connection status
+   
+    if (connected){
+        mark_firmware_valid();
+    } else {
+        ESP_LOGE("MAIN", "Failed to connect to WiFi. Restarting...");
+    }
 
     bool updated = ota_check_and_update();
     if (updated) {

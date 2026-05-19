@@ -79,3 +79,9 @@ void wifi_init() {
 
     ESP_LOGI("WIFI", "WiFi initialization completed.");
 }
+
+bool wifi_is_connected() {
+    wifi_ap_record_t ap_info;
+    esp_err_t err = esp_wifi_sta_get_ap_info(&ap_info);
+    return err == ESP_OK; // If we can get AP info, we're connected
+}
