@@ -3,6 +3,7 @@
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_https_ota.h"
+#include "esp_http_client.h"
 #include "github_ca_pem.h"
 #include "version.h"
 
@@ -47,6 +48,7 @@ static esp_err_t fetch_latest_version(char* out_version, char* out_url, size_t b
     config.cert_pem = (const char*)github_ca_pem;
     
     esp_http_client_handle_t client = esp_http_client_init(&config);
+    esp_http_client_clear_response_buffer(client); //clear cache
 
     esp_err_t err = esp_http_client_open(client, 0);
     if (err != ESP_OK) {
