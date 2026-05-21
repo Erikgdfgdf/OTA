@@ -7,7 +7,7 @@
 #include "esp_log.h"
 
 
-#define LED_PIN GPIO_NUM_4
+#define LED_PIN GPIO_NUM_5
 
 
 void led_init() {

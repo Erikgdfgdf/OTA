@@ -41,7 +41,7 @@ static bool extract_json_string(const char* json, const char* key, char* out, si
 
 static esp_err_t fetch_latest_version(char* out_version, char* out_url, size_t buf_size){
     char response[JSON_BUFFER_SIZE] = {0};
-
+    
     esp_http_client_config_t config = {};
     config.url = FIRMWARE_JSON_URL;
     config.cert_pem = (const char*)github_ca_pem;
