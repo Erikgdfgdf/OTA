@@ -9,6 +9,7 @@
 #define RED_PIN GPIO_NUM_12
 #define GREEN_PIN GPIO_NUM_14
 
+//#define LED_PIN RED_PIN
 #define LED_PIN GREEN_PIN
 
 
@@ -33,10 +34,6 @@ extern "C" void app_main(void)
     if (wifi_is_connected())
     {
         mark_firmware_valid();
-        bool updated = ota_check_and_update();
-            if (updated) {
-                esp_restart();
-            } 
     } else {
         ESP_LOGE("MAIN", "WiFi not connected- bootloader will rollback"); 
     }
