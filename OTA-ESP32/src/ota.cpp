@@ -48,6 +48,11 @@ static esp_err_t fetch_latest_version(char* out_version, char* out_url, size_t b
     config.keep_alive_enable = false;
     
     esp_http_client_handle_t client = esp_http_client_init(&config);
+    esp_http_client_set_header(client, "Cache-Control", "no-cache, no-store, must-revalidate");
+    esp_http_client_set_header(client, "Pragma", "no-cache");
+    esp_http_client_set_header(client, "Expires", "0");
+    esp_http_client_set_header(client, "If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
+    esp_http_client_set_header(client, "User-Agent", "ESP32-OTA-Client/1.0");
 
     esp_err_t err = esp_http_client_open(client, 0);
     if (err != ESP_OK) {
@@ -103,7 +108,7 @@ bool ota_check_and_update() {
 
     ESP_LOGI(TAG, "Latest firmware version: %s", latest_version);
 
-    if(strcmp(latest_version, CURRENT_VERSION) == 0) {
+    if(strcmp(latest_version, CURRENT_VERSION) >= 0) {
         ESP_LOGI(TAG, "Device is up to date");
         return false;
     }
@@ -113,6 +118,7 @@ bool ota_check_and_update() {
     esp_http_client_config_t http_config = {};
     http_config.url = firmware_url;
     http_config.cert_pem = (const char*)github_ca_pem;
+    http_config.keep_alive_enable = false;
 
     esp_https_ota_config_t ota_client_config = {};
     ota_client_config.http_config = &http_config;
