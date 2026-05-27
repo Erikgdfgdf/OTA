@@ -6,8 +6,8 @@
 #include "esp_netif.h"
 #include "nvs_flash.h"
 
-#define WIFI_SSID "Rish"
-#define WIFI_PASSWORD "12345678"
+#define WIFI_SSID "AndroidAP4043"
+#define WIFI_PASSWORD "sfyv4446"
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
@@ -74,8 +74,6 @@ void wifi_init() {
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
-
-    esp_wifi_connect();
 
     ESP_LOGI("WIFI", "WiFi initialization completed.");
 }

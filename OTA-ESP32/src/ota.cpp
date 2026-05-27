@@ -39,20 +39,50 @@ static bool extract_json_string(const char* json, const char* key, char* out, si
     return true;
 }
 
-static esp_err_t fetch_latest_version(char* out_version, char* out_url, size_t buf_size){
-    char response[JSON_BUFFER_SIZE] = {0};
-
-    esp_http_client_config_t config = {};
-    config.url = FIRMWARE_JSON_URL;
-    config.cert_pem = (const char*)github_ca_pem;
-    config.keep_alive_enable = false;
+static void add_anti_cache_headers(esp_http_client_handle_t client) {
+    // Generate a random cache-buster parameter
+    char cache_buster[32];
+    snprintf(cache_buster, sizeof(cache_buster), "%ld", esp_random());
     
-    esp_http_client_handle_t client = esp_http_client_init(&config);
-    esp_http_client_set_header(client, "Cache-Control", "no-cache, no-store, must-revalidate");
+    // Get current timestamp for additional cache busting
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    
+    // Add aggressive no-cache headers
+    esp_http_client_set_header(client, "Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
     esp_http_client_set_header(client, "Pragma", "no-cache");
     esp_http_client_set_header(client, "Expires", "0");
     esp_http_client_set_header(client, "If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
     esp_http_client_set_header(client, "User-Agent", "ESP32-OTA-Client/1.0");
+    esp_http_client_set_header(client, "Cache-Buster", cache_buster);
+    
+    // Add random query parameter to URL (will be appended in the request)
+    char random_param[64];
+    snprintf(random_param, sizeof(random_param), "?_=%lld", tv.tv_sec);
+    // Note: This needs to be set when initializing the URL, not as a header
+}
+
+static char* append_cache_buster(const char* url) {
+    static char url_with_buster[512];
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    snprintf(url_with_buster, sizeof(url_with_buster), "%s?_=%lld.%06ld", 
+             url, tv.tv_sec, tv.tv_usec);
+    return url_with_buster;
+}
+
+static esp_err_t fetch_latest_version(char* out_version, char* out_url, size_t buf_size){
+    char response[JSON_BUFFER_SIZE] = {0};
+
+    char* url = append_cache_buster(FIRMWARE_JSON_URL);
+
+    esp_http_client_config_t config = {};
+    config.url = url;
+    config.cert_pem = (const char*)github_ca_pem;
+    config.keep_alive_enable = false;
+    
+    esp_http_client_handle_t client = esp_http_client_init(&config);
+    add_anti_cache_headers(client);
 
     esp_err_t err = esp_http_client_open(client, 0);
     if (err != ESP_OK) {
@@ -108,7 +138,7 @@ bool ota_check_and_update() {
 
     ESP_LOGI(TAG, "Latest firmware version: %s", latest_version);
 
-    if(strcmp(latest_version, CURRENT_VERSION) >= 0) {
+    if(strcmp(latest_version, CURRENT_VERSION) == 0) {
         ESP_LOGI(TAG, "Device is up to date");
         return false;
     }

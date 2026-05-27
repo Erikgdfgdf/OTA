@@ -9,8 +9,8 @@
 #define RED_PIN GPIO_NUM_12
 #define GREEN_PIN GPIO_NUM_14
 
-//#define LED_PIN RED_PIN
-#define LED_PIN GREEN_PIN
+#define LED_PIN RED_PIN
+//#define LED_PIN GREEN_PIN
 
 
 void led_init() {
@@ -31,10 +31,7 @@ extern "C" void app_main(void)
 
     wifi_init();
 
-    if (wifi_is_connected())
-    {
-        mark_firmware_valid();
-    } else {
+    if (!wifi_is_connected()) {
         ESP_LOGE("MAIN", "WiFi not connected- bootloader will rollback"); 
     }
     
