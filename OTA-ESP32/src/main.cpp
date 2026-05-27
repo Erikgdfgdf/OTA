@@ -6,16 +6,20 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
+#define RED_PIN GPIO_NUM_12
+#define GREEN_PIN GPIO_NUM_14
 
-#define LED_PIN GPIO_NUM_5
+#define LED_PIN GREEN_PIN
 
 
 void led_init() {
-
     gpio_config_t io_conf = {};
-    io_conf.pin_bit_mask = (1ULL << LED_PIN);
+    io_conf.pin_bit_mask = (1ULL << RED_PIN) | (1ULL << GREEN_PIN);
     io_conf.mode = GPIO_MODE_OUTPUT;
     gpio_config(&io_conf);
+    
+    gpio_set_level(RED_PIN, 0);
+    gpio_set_level(GREEN_PIN, 0);
 }
 
 extern "C" void app_main(void)
